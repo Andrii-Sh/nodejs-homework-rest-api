@@ -12,4 +12,6 @@ const contactsAddSchema = Joi.object({
   }),
 });
 
-export default contactsAddSchema;
+export default {
+  contactsAddSchema,
+};
