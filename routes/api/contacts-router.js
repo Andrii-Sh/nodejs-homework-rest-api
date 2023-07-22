@@ -1,22 +1,16 @@
 import express from "express";
-import {
-  contactsGetController,
-  contactsGetByIdController,
-  contactsPostController,
-  contactsDeleteController,
-  contactsPutController,
-} from "../../controllers/contacts-controller.js";
+import moviesController from "../../controllers/contacts-controller.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", contactsGetController);
+contactsRouter.get("/", moviesController.getAll);
 
-contactsRouter.get("/:id", contactsGetByIdController);
+contactsRouter.get("/:id", moviesController.getById);
 
-contactsRouter.post("/", contactsPostController);
+contactsRouter.post("/", moviesController.add);
 
-contactsRouter.delete("/:id", contactsDeleteController);
+contactsRouter.delete("/:id", moviesController.deleteById);
 
-contactsRouter.put("/:id", contactsPutController);
+contactsRouter.put("/:id", moviesController.updateById);
 
 export default contactsRouter;
