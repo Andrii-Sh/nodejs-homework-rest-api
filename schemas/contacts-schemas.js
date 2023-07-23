@@ -10,6 +10,7 @@ const contactsAddSchema = Joi.object({
   phone: Joi.string().required().messages({
     "any.required": `missing required phone field`,
   }),
+  favourite: Joi.boolean(),
 });
 
 export default {
