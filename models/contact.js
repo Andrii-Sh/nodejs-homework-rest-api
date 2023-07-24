@@ -1,27 +1,24 @@
 import { Schema, model } from "mongoose";
 import { handleSaveError, handleUpdateValidate } from "./hooks.js";
 
-const contactSchema = new Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Set name for contact"],
-    },
-    email: {
-      type: String,
-      required: true,
-    },
-    phone: {
-      type: String,
-      required: true,
-    },
-    favorite: {
-      type: Boolean,
-      default: false,
-    },
+const contactSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, "Set name for contact"],
   },
-  { versionKey: false, timestamps: true }
-);
+  email: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  favorite: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 contactSchema.pre("findOneAndUpdate", handleUpdateValidate);
 

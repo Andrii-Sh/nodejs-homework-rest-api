@@ -1,30 +1,42 @@
 import express from "express";
-import moviesController from "../../controllers/contacts-controller.js";
+import contactsController from "../../controllers/contacts-controller.js";
 import { validateBody } from "../../decorators/index.js";
 import contactsSchemas from "../../schemas/contacts-schemas.js";
-import { isEmptyBody, isValidId } from "../../middlewares/index.js";
+import {
+  isEmptyBody,
+  isValidId,
+  isEmptyFavoriteBody,
+} from "../../middlewares/index.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", moviesController.getAll);
+contactsRouter.get("/", contactsController.getAll);
 
-contactsRouter.get("/:id", isValidId, moviesController.getById);
+contactsRouter.get("/:id", isValidId, contactsController.getById);
 
 contactsRouter.post(
   "/",
   isEmptyBody,
   validateBody(contactsSchemas.contactsAddSchema),
-  moviesController.add
+  contactsController.add
 );
 
-// contactsRouter.delete("/:id", isValidId, moviesController.deleteById);
+contactsRouter.delete("/:id", isValidId, contactsController.deleteById);
 
 contactsRouter.put(
   "/:id",
   isValidId,
   isEmptyBody,
-  validateBody(contactsSchemas.contactsAddSchema),
-  moviesController.updateById
+  // validateBody(contactsSchemas.contactsAddSchema),
+  contactsController.updateById
+);
+
+contactsRouter.patch(
+  "/:id/favorite",
+  isValidId,
+  isEmptyFavoriteBody,
+  validateBody(contactsSchemas.contactsUpdateFavoriteSchema),
+  contactsController.updateStatusContact
 );
 
 export default contactsRouter;
