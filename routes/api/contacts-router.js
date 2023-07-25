@@ -27,7 +27,7 @@ contactsRouter.put(
   "/:id",
   isValidId,
   isEmptyBody,
-  validateBody(contactsSchemas.contactsAddSchema),
+  // validateBody(contactsSchemas.contactsAddSchema),
   contactsController.updateById
 );
 
