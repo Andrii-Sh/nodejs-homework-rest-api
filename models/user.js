@@ -14,12 +14,12 @@ const userSchema = new Schema({
     required: [true, "Email is required"],
     unique: true,
   },
-  //   subscription: {
-  //     type: String,
-  //     enum: ["starter", "pro", "business"],
-  //     default: "starter",
-  //   },
-  //   token: String,
+  subscription: {
+    type: String,
+    enum: ["starter", "pro", "business"],
+    default: "starter",
+  },
+  token: String,
 });
 
 userSchema.pre("findOneAndUpdate", handleUpdateValidate);
