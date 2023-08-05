@@ -19,7 +19,7 @@ const signup = async (req, res) => {
   const newUser = await User.create({ ...req.body, password: hashPassword });
 
   res.status(201).json({
-    email: newUser.email,
+    user: { email: newUser.email, subscription: newUser.subscription },
   });
 };
 
@@ -41,13 +41,50 @@ const signin = async (req, res) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  await User.findByIdAndUpdate(user._id, { token });
 
   res.json({
     token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
+  });
+};
+
+const getCurrent = (req, res) => {
+  const { email, subscription } = req.user;
+
+  res.json({
+    email,
+    subscription,
+  });
+};
+
+const signout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
+
+  res.json({
+    message: "Signout seccess",
+  });
+};
+
+const updateUserSubscription = async (req, res) => {
+  const { id } = req.params;
+  const result = await User.findByIdAndUpdate(id, req.body, { new: true });
+  if (!result) {
+    throw HttpError(404);
+  }
+  res.json({
+    message: `Subscription was updated successfully. New subscription is ${result.subscription}`,
   });
 };
 
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
+  getCurrent: ctrlWrapper(getCurrent),
+  signout: ctrlWrapper(signout),
+  updateUserSubscription: ctrlWrapper(updateUserSubscription),
 };
