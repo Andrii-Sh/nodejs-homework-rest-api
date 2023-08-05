@@ -65,9 +65,7 @@ const signout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: "" });
 
-  res.json({
-    message: "Signout seccess",
-  });
+  res.status(204).json();
 };
 
 const updateUserSubscription = async (req, res) => {
