@@ -6,9 +6,12 @@ import {
   isEmptyBody,
   isValidId,
   isEmptyFavoriteBody,
+  authenticate,
 } from "../../middlewares/index.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", contactsController.getAll);
 
