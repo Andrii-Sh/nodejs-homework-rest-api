@@ -1,9 +1,12 @@
+import fs from "fs/promises";
+import path, { join } from "path";
 import bcrypt from "bcryptjs";
 import User from "../models/user.js";
 import { HttpError } from "../helpers/index.js";
 import { ctrlWrapper } from "../decorators/index.js";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 const { JWT_SECRET } = process.env;
 
@@ -15,8 +18,16 @@ const signup = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
+  const url = gravatar.url(email);
+  // console.log(url);
+
+  // const avatar = path.join("public", "avatars");
   const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    avatarURL: url,
+    password: hashPassword,
+  });
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -79,10 +90,21 @@ const updateUserSubscription = async (req, res) => {
   });
 };
 
+const avatarPath = path.resolve("public", "avatars");
+
+const updateUserAvatar = async (req, res) => {
+  // console.log(req.file);
+
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarPath, filename);
+  await fs.rename(oldPath, newPath);
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
   updateUserSubscription: ctrlWrapper(updateUserSubscription),
+  updateUserAvatar: ctrlWrapper(updateUserAvatar),
 };
