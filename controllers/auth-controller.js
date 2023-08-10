@@ -7,6 +7,7 @@ import { ctrlWrapper } from "../decorators/index.js";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import gravatar from "gravatar";
+import Jimp from "jimp";
 
 const { JWT_SECRET } = process.env;
 
@@ -19,9 +20,7 @@ const signup = async (req, res) => {
   }
 
   const url = gravatar.url(email);
-  // console.log(url);
 
-  // const avatar = path.join("public", "avatars");
   const hashPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({
     ...req.body,
@@ -93,11 +92,29 @@ const updateUserSubscription = async (req, res) => {
 const avatarPath = path.resolve("public", "avatars");
 
 const updateUserAvatar = async (req, res) => {
-  // console.log(req.file);
-
+  const { _id } = req.user;
   const { path: oldPath, filename } = req.file;
   const newPath = path.join(avatarPath, filename);
+  const avatarURL = path.join("avatars", filename);
+
+  try {
+    const avatar = await Jimp.read(oldPath);
+    await avatar.resize(256, 256).quality(60).writeAsync(oldPath);
+  } catch (error) {
+    console.log(error);
+  }
+
   await fs.rename(oldPath, newPath);
+
+  const result = await User.findByIdAndUpdate(_id, avatarURL, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404);
+  }
+  res.json({
+    avatarURL,
+  });
 };
 
 export default {

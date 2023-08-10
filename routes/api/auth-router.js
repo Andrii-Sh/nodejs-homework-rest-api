@@ -26,6 +26,7 @@ authRouter.patch("/", authenticate, authController.updateUserSubscription);
 
 authRouter.patch(
   "/avatars",
+  authenticate,
   upload.single("avatar"),
   authController.updateUserAvatar
 );
