@@ -106,9 +106,11 @@ const updateUserAvatar = async (req, res) => {
 
   await fs.rename(oldPath, newPath);
 
-  const result = await User.findByIdAndUpdate(_id, avatarURL, {
-    new: true,
-  });
+  const result = await User.findByIdAndUpdate(
+    _id,
+    { avatarURL },
+    { new: true }
+  );
   if (!result) {
     throw HttpError(404);
   }
